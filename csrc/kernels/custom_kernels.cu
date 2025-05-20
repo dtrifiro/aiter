@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <algorithm>
 #include "hip_compat.h"
+#include <iostream>
 
 #define AT_DISPATCH_FP8_CASE(enum_type, ...) AT_PRIVATE_CASE_TYPE_USING_HINT(enum_type, fp8_t, __VA_ARGS__)
 
@@ -1107,6 +1108,13 @@ void wvSplitK_(void* in_a, void* in_b, void* out_c, const int M_in, const int K_
     dim3 block(64, _WvPrGrp);                                                        \
     if ((K_in * N_in <= 32 * 1024) && (M_in % _YTILEs == 0)) {                       \
       int __wvPrGrp = mindiv(M_in, CuCount * _YTILEs, _WvPrGrp);                     \
+      std::cout << "_WvPrGrp=" << _WvPrGrp << std::endl; \
+      std::cout << "__wvPrGrp=" << __wvPrGrp << std::endl; \
+      std::cout << "CuCount=" << CuCount << std::endl; \
+      std::cout << "_YTILEs=" << _YTILEs << std::endl; \
+      std::cout << "_UNRLs=" << _UNRLs << std::endl; \
+      std::cout << "N_in=" << N_in << std::endl; \
+      std::cout << "_N=" << _N << std::endl; \
       wvSplitK_hf_sml_<fptype, 64, _YTILEs, _WvPrGrp, 8, _UNRLs, _N>                 \
           <<<grid, block, 0, stream>>>(K_in, M_in, af4, bf4, c, __wvPrGrp, CuCount); \
     } else if (K_in * N_in <= 32 * 1024 * 1.2) {                                     \
