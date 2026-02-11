@@ -72,30 +72,6 @@ def gemm_a8w8_bpreshuffle_ck(
 ) -> torch.Tensor: ...
 
 
-def gen_gemm_a8w8_bpreshuffle_cktile_fake_tensors(
-    XQ: torch.Tensor,
-    WQ: torch.Tensor,
-    x_scale: torch.Tensor,
-    w_scale: torch.Tensor,
-    Out: torch.Tensor,
-) -> torch.Tensor:
-    return Out
-
-
-@compile_ops(
-    "module_gemm_a8w8_bpreshuffle_cktile",
-    fc_name="gemm_a8w8_bpreshuffle_cktile",
-    gen_fake=gen_gemm_a8w8_bpreshuffle_cktile_fake_tensors,
-)
-def gemm_a8w8_bpreshuffle_cktile(
-    XQ: Tensor,
-    WQ: Tensor,
-    x_scale: Tensor,
-    w_scale: Tensor,
-    out: Tensor,
-) -> Tensor: ...
-
-
 def gen_gemm_a8w8_asm_fake_tensors(
     XQ: Tensor,  # A:[M, K] i8
     WQ: Tensor,  # B:[N, K] i8 -> shuffle layout(32,16)

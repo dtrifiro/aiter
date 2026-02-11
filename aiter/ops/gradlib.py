@@ -6,67 +6,6 @@ from typing import Optional
 from ..jit.core import compile_ops
 
 
-@compile_ops("module_hipbsolgemm")
-def hipb_create_extension() -> None: ...
-
-
-@compile_ops("module_hipbsolgemm")
-def hipb_destroy_extension() -> None: ...
-
-
-def gen_hipb_mm_fake_tensor(
-    mat1: torch.Tensor,
-    mat2: torch.Tensor,
-    solution_index: int,
-    bias: Optional[torch.Tensor] = None,
-    out_dtype: Optional[torch.dtype] = None,
-    scaleA: Optional[torch.Tensor] = None,
-    scaleB: Optional[torch.Tensor] = None,
-    scaleOut: Optional[torch.Tensor] = None,
-    bpreshuffle: Optional[bool] = None,
-):
-    mat1_sizes = mat1.size()
-    mat2_sizes = mat2.size()
-    in_dtype = mat1.dtype
-    out_dtype = out_dtype if out_dtype is not None else in_dtype
-    result = torch.empty(
-        (mat1_sizes[0], mat2_sizes[1]), dtype=out_dtype, device=mat1.device
-    )
-
-    return result
-
-
-@compile_ops("module_hipbsolgemm", gen_fake=gen_hipb_mm_fake_tensor)
-def hipb_mm(
-    mat1: torch.Tensor,
-    mat2: torch.Tensor,
-    solution_index: int,
-    bias: Optional[torch.Tensor] = None,
-    out_dtype: Optional[torch.dtype] = None,
-    scaleA: Optional[torch.Tensor] = None,
-    scaleB: Optional[torch.Tensor] = None,
-    scaleOut: Optional[torch.Tensor] = None,
-    bpreshuffle: Optional[bool] = None,
-) -> torch.Tensor: ...
-
-
-@compile_ops("module_hipbsolgemm")
-def hipb_findallsols(
-    mat1: torch.Tensor,
-    mat2: torch.Tensor,
-    bias: Optional[torch.Tensor] = None,
-    out_dtype: Optional[torch.dtype] = None,
-    scaleA: Optional[torch.Tensor] = None,
-    scaleB: Optional[torch.Tensor] = None,
-    scaleC: Optional[torch.Tensor] = None,
-    bpreshuffle: bool = False,
-) -> list[int]: ...
-
-
-@compile_ops("module_hipbsolgemm")
-def getHipblasltKernelName() -> None: ...
-
-
 @compile_ops("module_rocsolgemm")
 def rocb_create_extension() -> None: ...
 
